@@ -1,0 +1,5 @@
+.idea
+IcarusInjector-win32-x64
+node_modules
+package-lock.json
+latest.log

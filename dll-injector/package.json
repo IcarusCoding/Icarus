@@ -1,0 +1,23 @@
+{
+  "name": "icarus",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build_win64": "electron-packager . IcarusInjector --platform=win32 --arch=x64 --win32metadata.requested-execution-level=highestAvailable --overwrite",
+    "build_win86": "electron-packager . IcarusInjector --platform=win32 --arch=x86 --win32metadata.requested-execution-level=highestAvailable --overwrite"
+  },
+  "keywords": [],
+  "author": "IcarusCoding",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron": "^18.2.0",
+    "electron-packager": "^15.5.1",
+    "electron-rebuild": "^3.2.7"
+  },
+  "dependencies": {
+    "electron-log": "^4.4.7",
+    "icarus_injector": "file:../IcarusInjectorNodeModule"
+  }
+}

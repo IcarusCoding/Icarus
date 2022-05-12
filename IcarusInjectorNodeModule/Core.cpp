@@ -10,7 +10,7 @@ using namespace v8;
 NAN_METHOD(PassNumber) {
     HINSTANCE hInst = LoadLibraryA("IcarusInjectorLibrary.dll");
     std::cout << hInst << "\n";
-    Injector *inj = new Injector();
+    Injector* inj = CreateInjector(nullptr);
     std::cout << (inj == nullptr) << "\n";
     Nan::Maybe<double> value = Nan::To<double>(info[0]);
     Local<Number> retval = Nan::New(value.FromJust() + 100);

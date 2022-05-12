@@ -1,0 +1,151 @@
+@use "../Constants.scss";
+
+.navigator {
+  position: relative;
+  width: 420px;
+  height: 70px;
+  background: Constants.$color-bg-secondary;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0 0 50% 50%;
+
+  .klose {
+    position: absolute;
+    right: 10px;
+    color: white;
+    top: 13px;
+
+    &:hover {
+      color: indianred
+    }
+
+  }
+
+  ul {
+    display: flex;
+    width: 350px;
+
+    .selector {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      background: Constants.$color-accent-primary;
+      bottom: -50%;
+      border-radius: 50%;
+      border: 6px solid Constants.$color-bg-primary;
+      transition: 0.5s;
+
+      &:before {
+        content: '';
+        bottom: 50%;
+        left: -22px;
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: transparent;
+        border-bottom-right-radius: 20px;
+        box-shadow: 0 10px 0 0 Constants.$color-bg-primary;
+      }
+
+      &:after {
+        content: '';
+        bottom: 50%;
+        right: -22px;
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: transparent;
+        border-bottom-left-radius: 20px;
+        box-shadow: 0 10px 0 0 Constants.$color-bg-primary;
+      }
+    }
+
+    li {
+      position: relative;
+      list-style-type: none;
+      width: 70px;
+      height: 70px;
+      z-index: 1;
+
+      a {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        text-align: center;
+        font-weight: 700;
+
+        .icon {
+          position: relative;
+          display: block;
+          line-height: 80px;
+          font-size: 1.5em;
+          text-align: center;
+          color: white;
+          transition: 0.5s;
+        }
+
+        .text {
+          position: absolute;
+          color: white;
+          font-size: 0.75em;
+          margin-top: -15px;
+          letter-spacing: 0.1em;
+          transition: 0.5s;
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+      }
+
+      &.active a {
+        .icon {
+          color: Constants.$color-bg-primary;
+          font-size: 2em;
+          transform: translateY(35px);
+        }
+
+        .text {
+          opacity: 1;
+          transform: translateY(-10px);
+        }
+      }
+
+      &:nth-child(1).active ~ .selector {
+        transform: translateX(calc(70px * 0)) translateY(calc(5px * 0));
+      }
+
+      &:nth-child(2).active ~ .selector {
+        transform: translateX(calc(70px * 1)) translateY(calc(5px * 0));
+      }
+
+      &:nth-child(3).active ~ .selector {
+        transform: translateX(calc(70px * 2)) translateY(calc(5px * 0));
+      }
+
+      &:nth-child(4).active ~ .selector {
+        transform: translateX(calc(70px * 3)) translateY(calc(5px * 0));
+      }
+
+      &:nth-child(5).active ~ .selector {
+        transform: translateX(calc(70px * 4)) translateY(calc(5px * 0));
+      }
+    }
+  }
+}
+
+@keyframes xAxis {
+  50% {
+    animation-timing-function: cubic-bezier(0.02, 0.01, 0.21, 1);
+    transform: translateY(-100px);
+  }
+}
+
+@keyframes yAxis {
+  50% {
+    animation-timing-function: cubic-bezier(0.3, 0.27, 0.07, 1.64);
+    transform: translateX(100px);
+  }
+}

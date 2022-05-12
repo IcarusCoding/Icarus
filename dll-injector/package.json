@@ -1,23 +1,56 @@
 {
-  "name": "icarus",
-  "version": "1.0.0",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "build_win64": "electron-packager . IcarusInjector --platform=win32 --arch=x64 --win32metadata.requested-execution-level=highestAvailable --overwrite",
-    "build_win86": "electron-packager . IcarusInjector --platform=win32 --arch=x86 --win32metadata.requested-execution-level=highestAvailable --overwrite"
-  },
-  "keywords": [],
-  "author": "IcarusCoding",
-  "license": "ISC",
-  "description": "",
-  "devDependencies": {
-    "electron": "^18.2.0",
-    "electron-packager": "^15.5.1",
-    "electron-rebuild": "^3.2.7"
-  },
+  "name": "electron-react",
+  "version": "0.1.0",
+  "private": true,
+  "main": "public/main.js",
+  "description": "windows dll injector",
+  "homepage": "./",
   "dependencies": {
-    "electron-log": "^4.4.7",
-    "icarus_injector": "file:../IcarusInjectorNodeModule"
-  }
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.2.0",
+    "@testing-library/user-event": "^13.5.0",
+    "bootstrap": "^5.1.3",
+    "electron-is-dev": "^2.0.0",
+    "icarus_injector": "file:../IcarusInjectorNodeModule",
+    "react": "^18.1.0",
+    "react-bootstrap": "^2.3.1",
+    "react-dom": "^18.1.0",
+    "react-icons": "^4.3.1",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "electron": "^18.2.3",
+    "electron-packager": "^15.5.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "electron-dev": "electron .",
+    "build_win64": "electron-packager . IcarusInjector --platform=win32 --arch=x64 --win32metadata.requested-execution-level=highestAvailable --overwrite",
+    "build_win86": "electron-packager . IcarusInjector --platform=win32 --arch=x86 --win32metadata.requested-execution-level=highestAvailable --overwrite",
+    "installer_x64": "electron-installer-windows --src IcarusInjector-win32-x64/ --dest IcarusInjector-win32-x64-installer/"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "author": "IcarusCoding",
+  "license": "ISC"
 }

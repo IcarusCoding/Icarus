@@ -1,6 +1,6 @@
 {
   "name": "icarus_injector",
-  "version": "1.0",
+  "version": "1.0.0",
   "gypfile": true,
   "main": "./build/Release/icarus_injector",
   "dependencies": {

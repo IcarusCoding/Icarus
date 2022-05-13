@@ -9,19 +9,15 @@
   justify-content: center;
   align-items: center;
   border-radius: 0 0 50% 50%;
-
   .close {
     position: absolute;
     right: 10px;
     color: white;
     top: 13px;
-
     &:hover {
       color: indianred
     }
-
   }
-
   ul {
     display: flex;
     width: 350px;
@@ -34,7 +30,6 @@
       border-radius: 50%;
       border: 6px solid Constants.$color-bg-primary;
       transition: 0.5s;
-
       &:before {
         content: '';
         bottom: 50%;
@@ -46,7 +41,6 @@
         border-bottom-right-radius: 20px;
         box-shadow: 0 10px 0 0 Constants.$color-bg-primary;
       }
-
       &:after {
         content: '';
         bottom: 50%;
@@ -59,14 +53,12 @@
         box-shadow: 0 10px 0 0 Constants.$color-bg-primary;
       }
     }
-
     li {
       position: relative;
       list-style-type: none;
       width: 70px;
       height: 70px;
       z-index: 1;
-
       a {
         position: relative;
         display: flex;
@@ -76,7 +68,6 @@
         width: 100%;
         text-align: center;
         font-weight: 700;
-
         .icon {
           position: relative;
           display: block;
@@ -86,7 +77,6 @@
           color: white;
           transition: 0.5s;
         }
-
         .text {
           position: absolute;
           color: white;
@@ -98,36 +88,29 @@
           transform: translateY(-20px);
         }
       }
-
       &.active a {
         .icon {
           color: Constants.$color-bg-primary;
           font-size: 2em;
           transform: translateY(35px);
         }
-
         .text {
           opacity: 1;
           transform: translateY(-10px);
         }
       }
-
       &:nth-child(1).active ~ .selector {
         transform: translateX(calc(70px * 0)) translateY(calc(5px * 0));
       }
-
       &:nth-child(2).active ~ .selector {
         transform: translateX(calc(70px * 1)) translateY(calc(5px * 0));
       }
-
       &:nth-child(3).active ~ .selector {
         transform: translateX(calc(70px * 2)) translateY(calc(5px * 0));
       }
-
       &:nth-child(4).active ~ .selector {
         transform: translateX(calc(70px * 3)) translateY(calc(5px * 0));
       }
-
       &:nth-child(5).active ~ .selector {
         transform: translateX(calc(70px * 4)) translateY(calc(5px * 0));
       }

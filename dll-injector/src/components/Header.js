@@ -11,7 +11,7 @@ import styles from './Header.module.scss';
 
 import MenuItem from "./MenuItem";
 
-const remote = require('electron').remote;
+const remote = window.require('@electron/remote');
 
 const Header = () => {
     const [activeIndex, setActiveIndex] = useState(0);

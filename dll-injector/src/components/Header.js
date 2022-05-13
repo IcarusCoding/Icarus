@@ -11,6 +11,8 @@ import styles from './Header.module.scss';
 
 import MenuItem from "./MenuItem";
 
+const remote = require('electron').remote;
+
 const Header = () => {
     const [activeIndex, setActiveIndex] = useState(0);
 
@@ -23,7 +25,7 @@ const Header = () => {
                 <MenuItem name="Settings" icon={<FiSettings/>} active={activeIndex === 3} click={() => setActiveIndex(3)}/>
                 <MenuItem name="Inject" icon={<FaSyringe/>} active={activeIndex === 4} click={() => setActiveIndex(4)}/>
                 <div className={styles.selector}/>
-                <div className={styles.klose}>
+                <div className={styles.close} onClick={() => remote.getCurrentWindow().close()}>
                     <a>
                         <span><FaTimes/></span>
                     </a>

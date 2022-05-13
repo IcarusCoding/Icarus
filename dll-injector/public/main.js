@@ -13,10 +13,16 @@ function initWindow() {
     const window = new BrowserWindow({
         width: size.width,
         height: size.height,
+        resizable: false,
+        webPreferences: {
+            nodeIntegration: true,
+            enableRemoteModule: true
+        },
         show: false
     });
     window.once("ready-to-show", () => window.show());
     window.removeMenu();
+    window.setResizable(false);
     window.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, "../build/index.html")}`).then(() => {
         //log.info('Window initialized');
         console.log(injector.test(100))

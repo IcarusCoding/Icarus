@@ -8,13 +8,13 @@
   align-items: center;
   border-radius: 0 0 50% 50%;
 }
-.navigator .klose {
+.navigator .close {
   position: absolute;
   right: 10px;
   color: white;
   top: 13px;
 }
-.navigator .klose:hover {
+.navigator .close:hover {
   color: indianred;
 }
 .navigator ul {
@@ -112,19 +112,6 @@
 }
 .navigator ul li:nth-child(5).active ~ .selector {
   transform: translateX(280px) translateY(0px);
-}
-
-@keyframes xAxis {
-  50% {
-    animation-timing-function: cubic-bezier(0.02, 0.01, 0.21, 1);
-    transform: translateY(-100px);
-  }
-}
-@keyframes yAxis {
-  50% {
-    animation-timing-function: cubic-bezier(0.3, 0.27, 0.07, 1.64);
-    transform: translateX(100px);
-  }
 }
 
 /*# sourceMappingURL=Header.module.css.map */

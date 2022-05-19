@@ -1,0 +1,48 @@
+@use "../Constants.scss";
+@use "Container.scss";
+
+div {
+  .searchbar {
+    height: 35px;
+    border-radius: 10px;
+    background-color: Constants.$color-bg-secondary;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    button {
+      border-bottom-left-radius: inherit;
+      border-top-left-radius: inherit;
+      color: Constants.$color-bg-primary;
+      background-color: Constants.$color-bg-secondary;
+      align-items: center;
+      display: flex;
+      justify-content: center;
+      width: 40px;
+      min-width: 40px;
+      .icon {
+        color: white;
+        transition: 0.5s;
+        &:hover {
+          color: Constants.$color-accent-primary;
+        }
+      }
+    }
+    div.v-spacer {
+      height: 50%;
+      width: 1px;
+      background-color: white;
+    }
+    input[type=text] {
+      padding-left: 10px;
+      color: white;
+      background-color: Constants.$color-bg-secondary;
+      border-bottom-right-radius: inherit;
+      border-top-right-radius: inherit;
+      width: 100%;
+      &:focus {
+        outline: none;
+        border-color: Constants.$color-accent-primary
+      }
+    }
+  }
+}

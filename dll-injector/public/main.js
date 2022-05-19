@@ -1,38 +1,42 @@
-const { app, BrowserWindow } = require('electron')
+const {app, BrowserWindow, ipcMain} = require('electron')
 const isDev = require("electron-is-dev");
 const path = require("path");
+
 const injector = require("icarus_injector");
 
-const remoteMain = require("@electron/remote/main");
-
 const size = {
-    width: 960,
-    height: 540
+    width: 800,
+    height: 800
+}
+
+function setupHandlers(window) {
+    ipcMain.handle('close', (e) => window.close());
+    ipcMain.handle('minimize', (e) => window.minimize());
+    ipcMain.on('get-processes', async (e) => {
+        const array = injector.retrieveProcesses();
+        e.sender.send('receive-processes', array);
+    });
 }
 
 function initWindow() {
-    remoteMain.initialize();
-    //log.info(`Initializing window with size ${size.width}x${size.height}`);
     const window = new BrowserWindow({
         width: size.width,
         height: size.height,
-        resizable: false,
+        resizable: isDev,
         webPreferences: {
-            nodeIntegration: true,
-            enableRemoteModule: true,
-            contextIsolation: false
+            preload: isDev ? path.join(app.getAppPath(), './public/preload.js') : path.join(app.getAppPath(), './build/preload.js'),
+            contextIsolation: true
         },
         show: false
     });
-    remoteMain.enable(window.webContents);
     window.once("ready-to-show", () => window.show());
-   // window.removeMenu();
-    window.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, "../build/index.html")}`).then(() => {
-        //log.info('Window initialized');
-        console.log(injector.test(100))
-    });
+    if (!isDev) {
+        window.removeMenu();
+    } else {
+        window.webContents.openDevTools();
+    }
+    window.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, "../build/index.html")}`)
+        .then(() => setupHandlers(window));
 }
 
-app.whenReady().then(async () => {
-    initWindow();
-});
+app.whenReady().then(async () => initWindow());

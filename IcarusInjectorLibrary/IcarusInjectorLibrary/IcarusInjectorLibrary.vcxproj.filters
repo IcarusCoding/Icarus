@@ -18,9 +18,27 @@
     <ClInclude Include="Injector.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="ProcessInfo.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtils.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="lodepng.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Injector.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessInfo.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtils.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="lodepng.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

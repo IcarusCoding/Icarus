@@ -1,0 +1,22 @@
+.step-wrapper-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.step {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  top: 0;
+}
+
+.active {
+  opacity: 1;
+  pointer-events: inherit;
+  position: relative;
+  z-index: 1;
+}

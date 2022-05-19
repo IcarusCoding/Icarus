@@ -1,0 +1,21 @@
+@use "../Constants.scss";
+
+.footer {
+  height: 100%;
+  background-color: Constants.$color-bg-secondary;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px 10px 0 0;
+
+  .footer-content {
+    display: inherit;
+    flex-direction: row;
+    align-items: inherit;
+
+    .icon {
+      margin-right: 5px;
+    }
+  }
+}

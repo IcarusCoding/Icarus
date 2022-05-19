@@ -1,3 +1,8 @@
+declare global {
+    interface Window {
+        api? : any
+    }
+}
 export default class ElectronUtils {
 
     static runsInElectron() {
@@ -12,10 +17,25 @@ export default class ElectronUtils {
 
     static closeElectron() {
         if (ElectronUtils.runsInElectron()) {
-            const remote = window.require('@electron/remote');
-            remote.getCurrentWindow().close()
+            window.api.close();
         }
     }
 
+    static minimizeElectron() {
+        if (ElectronUtils.runsInElectron()) {
+            window.api.minimize();
+        }
+    }
 
+    static getProcesses() {
+        if (ElectronUtils.runsInElectron()) {
+            return window.api.getProcesses();
+        }
+    }
+
+    static receiveProcesses(func) {
+        if (ElectronUtils.runsInElectron()) {
+            window.api.receiveProcesses(data => func(data));
+        }
+    }
 }

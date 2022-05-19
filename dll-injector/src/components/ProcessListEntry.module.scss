@@ -1,0 +1,49 @@
+@use "../Constants.scss";
+
+.entry {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 50px;
+  background-color: Constants.$color-bg-secondary;
+  .image-container {
+    background-color: green;
+    width: 50px;
+    min-width: 50px;
+    height: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .image {
+      width: 35px;
+      height: 35px;
+    }
+  }
+  .card-container {
+    width: 100%;
+    height: inherit;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
+    justify-content: center;
+    .card-header {
+      display: flex;
+      flex-direction: row;
+      h5 {
+        color: #e5e5e5;
+        font-weight: 400;
+      }
+      h5 + h5 {
+        margin-left: 40px; /*TODO beautify + responsive*/
+      }
+    }
+    .card-text {
+      text-overflow: clip;
+      overflow: hidden;
+      height: 1.2em;
+      white-space: nowrap;
+      color: #a0a0a0;
+    }
+  }
+}

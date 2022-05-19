@@ -1,25 +1,48 @@
-#include <nan.h>
+#include "WinUtils.h"
+#include "ProcessInfo.h"
+
+#include "json.hpp"
+
+#include <napi.h>
+#include <vector>
 #include <iostream>
-#include <Windows.h>
-#include "Injector.h"
+#include <tlhelp32.h>
+#include <tchar.h>
 
-using namespace std;
-using namespace Nan;
-using namespace v8;
+void printError(const char* msg) {
+    DWORD eNum;
+    TCHAR sysMsg[256];
+    TCHAR* p;
 
-NAN_METHOD(PassNumber) {
-    HINSTANCE hInst = LoadLibraryA("IcarusInjectorLibrary.dll");
-    std::cout << hInst << "\n";
-    Injector* inj = CreateInjector(nullptr);
-    std::cout << (inj == nullptr) << "\n";
-    Nan::Maybe<double> value = Nan::To<double>(info[0]);
-    Local<Number> retval = Nan::New(value.FromJust() + 100);
-    info.GetReturnValue().Set(retval);
+    eNum = GetLastError();
+    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL, eNum,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_ENGLISH_US),
+        sysMsg, 256, NULL);
+
+    std::cout << "WARNING: " << msg << " failed with error " << eNum << " (" << sysMsg << ")\n";
 }
 
-NAN_MODULE_INIT(Init) {
-    Nan::Set(target, New<String>("test").ToLocalChecked(),
-        GetFunction(New<FunctionTemplate>(PassNumber)).ToLocalChecked());
+Napi::Value RetrieveProcesses(const Napi::CallbackInfo &info) {
+	Napi::Env env = info.Env();
+    std::vector<PProcessInfo> processes = GetAllProcesses();
+    Napi::Array processesNapi = Napi::Array::New(env, processes.size());
+    int i = 0;
+	for (auto const& processInfo : processes) {
+		nlohmann::json j;
+		j["pid"] = processInfo->GetPID();
+		j["name"] = processInfo->GetName();
+		j["icon"] = processInfo->GetIcon();
+		j["exePath"] = processInfo->GetExePath();
+		processesNapi[i++] = Napi::String::New(env, j.dump());
+        delete processInfo;
+	}
+	return processesNapi;
 }
 
-NODE_MODULE(icarus_injector, Init)
+Napi::Object Init(Napi::Env env, Napi::Object exports) {
+	exports.Set(Napi::String::New(env, "retrieveProcesses"), Napi::Function::New<RetrieveProcesses>(env));
+	return exports;
+}
+
+NODE_API_MODULE(NODE_GYP_MODULE_NAME, Init)

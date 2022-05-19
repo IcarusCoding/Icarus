@@ -1,4 +1,5 @@
 @use "Constants.scss";
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
 
 * {
@@ -10,10 +11,43 @@
   font-family: "Poppins", sans-serif;
 }
 
-body {
+html, body {
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+div#root, div.root-container {
+  height: 100%;
+  width: 100%;
+}
+
+div.root-container {
   display: flex;
-  justify-content: center;
-  /*align-items: center;
-  */min-height: 100vh;
+  flex-direction: column;
+  max-height: 100%;
+  align-items: center;
   background-color: Constants.$color-bg-primary;
+}
+
+div.header-container, div.main-container, div.footer-container {
+  margin: auto;
+  height: 100%;
+  width: 80%;
+  min-width: 400px;
+}
+
+div.header-container {
+  flex: 0 0 70px;
+  background-color: transparent;
+}
+
+div.footer-container {
+  flex: 0 0 30px;
+  margin-top: 10px;
+}
+
+div.main-container {
+  flex: 1;
+  overflow: hidden;
 }

@@ -4,6 +4,7 @@
   "gypfile": true,
   "main": "./build/Release/icarus_injector",
   "dependencies": {
-    "nan": "^2.15.0"
+    "nan": "^2.15.0",
+    "node-addon-api": "^5.0.0"
   }
 }

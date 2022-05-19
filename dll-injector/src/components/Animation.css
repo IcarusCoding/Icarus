@@ -1,0 +1,62 @@
+.animated {
+    animation-duration: .5s;
+    animation-fill-mode: backwards;
+}
+
+.enterRight {
+    animation-name: fadeInRight;
+}
+
+.enterLeft {
+    animation-name: fadeInLeft;
+}
+
+.exitRight {
+    animation-name: fadeOutRight;
+}
+
+.exitLeft {
+    animation-name: fadeOutLeft;
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translate3d(100%, 0, 0);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translate3d(-100%, 0, 0);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes fadeOutRight {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        transform: translate3d(100%, 0, 0);
+    }
+}
+
+@keyframes fadeOutLeft {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        transform: translate3d(-100%, 0, 0);
+    }
+}

@@ -14,8 +14,22 @@ var ElectronUtils = /** @class */ (function () {
     };
     ElectronUtils.closeElectron = function () {
         if (ElectronUtils.runsInElectron()) {
-            var remote = window.require('@electron/remote');
-            remote.getCurrentWindow().close();
+            window.api.close();
+        }
+    };
+    ElectronUtils.minimizeElectron = function () {
+        if (ElectronUtils.runsInElectron()) {
+            window.api.minimize();
+        }
+    };
+    ElectronUtils.getProcesses = function () {
+        if (ElectronUtils.runsInElectron()) {
+            return window.api.getProcesses();
+        }
+    };
+    ElectronUtils.receiveProcesses = function (func) {
+        if (ElectronUtils.runsInElectron()) {
+            window.api.receiveProcesses(function (data) { return func(data); });
         }
     };
     return ElectronUtils;

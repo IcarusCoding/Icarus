@@ -5,7 +5,7 @@
 using std::cout;
 
 Injector::Injector(PInjectionContext ctx) noexcept : ctx(ctx) {
-	cout << "NICO STINKT NACH MAGGI\n";
+
 }
 
 ReflectiveInjector::ReflectiveInjector(PInjectionContext ctx) : Injector(ctx) {}
@@ -15,5 +15,15 @@ DWORD ReflectiveInjector::Inject() noexcept {
 }
 
 Injector* CreateInjector(PInjectionContext ctx) {
-	return new ReflectiveInjector(ctx);
+	DWORD settings = ctx->settings;
+	if (settings & LOADLIBRARY) {
+		cout << "Not supported\n";
+	}	
+	if (settings & REFLECTIVE) {
+		return new ReflectiveInjector(ctx);
+	}
+	if (settings & NATIVE) {
+		cout << "Not supported\n";
+	}
+	return nullptr;
 }

@@ -13,16 +13,16 @@
     "electron-is-dev": "^2.0.0",
     "icarus_injector": "file:../IcarusInjectorNodeModule",
     "react": "^18.1.0",
-    "react-bootstrap": "^2.3.1",
+    "react-bootstrap": "^2.4.0",
     "react-dom": "^18.1.0",
     "react-icons": "^4.3.1",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4",
-    "@electron/remote": "^2.0.8"
+    "web-vitals": "^2.1.4"
   },
   "devDependencies": {
     "electron": "^18.2.3",
-    "electron-packager": "^15.5.1"
+    "electron-packager": "^15.5.1",
+    "electron-rebuild": "^3.2.7"
   },
   "scripts": {
     "start": "react-scripts start",

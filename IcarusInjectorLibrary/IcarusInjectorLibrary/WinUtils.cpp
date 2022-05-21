@@ -7,6 +7,9 @@
 const static TCHAR encodeLookup[] = TEXT("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
 const static TCHAR padCharacter = TEXT('=');
 
+static HHOOK hWinHook;
+static DWORD clickedPID;
+
 unsigned int decodeBMP(std::vector<unsigned char>& image, unsigned int width, unsigned int height, const std::vector<unsigned char>& bmp) {
     unsigned pixeloffset = bmp[10] + 256 * bmp[11];
     unsigned numChannels = bmp[28] / 8;
@@ -29,7 +32,7 @@ unsigned int decodeBMP(std::vector<unsigned char>& image, unsigned int width, un
     return 0;
 }
 
-BOOL IsElevated() {
+BOOL icarus::IsElevated() {
     BOOL retVal = FALSE;
     HANDLE hToken = NULL;
     if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken)) {
@@ -43,7 +46,7 @@ BOOL IsElevated() {
     return retVal;
 }
 
-std::string ConvertIconToBase64(HICON hIcon) {
+std::string icarus::ConvertIconToBase64(HICON hIcon) {
     ICONINFO iconInfo;
     if (!GetIconInfo(hIcon, &iconInfo)) {
         std::cout << "ALLAHU AKBAR ---> " << GetLastError() << "    " << (hIcon == nullptr) << "\n";
@@ -121,7 +124,7 @@ std::string ConvertIconToBase64(HICON hIcon) {
     std::vector<unsigned char> png;
     error = lodepng::encode(png, image, width, height);
 
-    std::string base64 = ToBase64(png);
+    std::string base64 = icarus::ToBase64(png);
 
     SelectObject(hdc, prevHDC);
     DeleteObject(winBitmap);
@@ -132,7 +135,7 @@ std::string ConvertIconToBase64(HICON hIcon) {
     return base64;
 }
 
-std::string ToBase64(std::vector<BYTE> input) {
+std::string icarus::ToBase64(std::vector<BYTE> input) {
     std::basic_string<TCHAR> encodedString;
     encodedString.reserve(((input.size() / 3) + (input.size() % 3 > 0)) * 4);
     DWORD temp;
@@ -165,4 +168,68 @@ std::string ToBase64(std::vector<BYTE> input) {
         break;
     }
     return encodedString;
+}
+
+VOID icarus::StartConsole() {
+    AllocConsole();
+    FILE* file;
+    freopen_s(&file, "CONOUT$", "w", stdout);
+}
+
+DWORD icarus::ElevatedRestart() {
+    CHAR szModule[MAX_PATH];
+    GetModuleFileNameA(NULL, szModule, MAX_PATH);
+    CHAR szDirectory[MAX_PATH];
+    GetCurrentDirectory(MAX_PATH, szDirectory);
+    char* cmd = GetCommandLineA();
+    if (*cmd == '"') {
+        ++cmd;
+        while (*cmd)
+            if (*cmd++ == '"')
+                break;
+    } else {
+        while (*cmd && *cmd != ' ' && *cmd != '\t')
+            ++cmd;
+    }
+    while (*cmd == ' ' || *cmd == '\t')
+        cmd++;
+
+    SHELLEXECUTEINFOA shellExecuteInfo = {
+        .cbSize = sizeof(SHELLEXECUTEINFOA),
+        .fMask = NULL,
+        .hwnd = NULL,
+        .lpVerb = "runas",
+        .lpFile = szModule,
+        .lpParameters = cmd,
+        .lpDirectory = szDirectory,
+        .nShow = SW_SHOW,
+        .hInstApp = NULL
+    };
+    if (!ShellExecuteExA(&shellExecuteInfo)) {
+        return GetLastError();
+    }
+    return 0;
+}
+
+VOID icarus::ExitApplication(DWORD exitCode) {
+    ExitProcess(exitCode);
+}
+
+LRESULT CALLBACK HookProc(INT code, WPARAM wParam, LPARAM lParam) {
+    if (wParam == WM_LBUTTONDOWN) {
+        POINT p;
+        GetCursorPos(&p);
+        HWND hwnd = WindowFromPoint(p);
+        DWORD PID;
+        GetWindowThreadProcessId(hwnd, &PID);
+        clickedPID = PID;
+        std::cout << "CLICKED ON " << clickedPID << "\n"; /* TODO callbacks */
+        UnhookWindowsHookEx(hWinHook);
+    }
+    return CallNextHookEx(hWinHook, code, wParam, lParam);
+}
+
+DWORD icarus::GetNextWindowClicked() {
+    hWinHook = SetWindowsHookExA(WH_MOUSE_LL, HookProc, NULL, 0);
+    return -1;
 }

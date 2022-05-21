@@ -36,7 +36,7 @@ string GetDefaultIcon() noexcept {
 	}
 	const HINSTANCE hImageres = LoadLibraryA("imageres.dll");
 	if (hImageres) {
-		DEFAULT_EXECUTABLE_ICON = ConvertIconToBase64(LoadIconA(hImageres, MAKEINTRESOURCEA(15)));
+		DEFAULT_EXECUTABLE_ICON = icarus::ConvertIconToBase64(LoadIconA(hImageres, MAKEINTRESOURCEA(15)));
 	}
 	return DEFAULT_EXECUTABLE_ICON;
 }
@@ -77,7 +77,7 @@ vector<PProcessInfo> GetAllProcesses() noexcept {
                     icons.resize(nIcons);
                     std::string icon;
                     if (!icons.empty()) {
-                        std::string base64 = ConvertIconToBase64(icons.at(0));
+                        std::string base64 = icarus::ConvertIconToBase64(icons.at(0));
                         icon = base64;
                         DestroyIcon(icons.at(0));
                     }

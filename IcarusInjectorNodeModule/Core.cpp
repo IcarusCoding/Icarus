@@ -40,8 +40,29 @@ Napi::Value RetrieveProcesses(const Napi::CallbackInfo &info) {
 	return processesNapi;
 }
 
+Napi::Value IsElevated(const Napi::CallbackInfo& info) {
+	return Napi::Boolean::New(info.Env(), icarus::IsElevated());
+}
+
+Napi::Value RestartElevated(const Napi::CallbackInfo& info) {
+	return Napi::Number::New(info.Env(), icarus::ElevatedRestart());
+}
+
+VOID ExitApplication(const Napi::CallbackInfo& info) {
+	icarus::ExitApplication(info.Length() != 0 ? info[0].ToNumber().Int32Value() : 0);
+}
+
+Napi::Value GetNextClicked(const Napi::CallbackInfo& info) {
+	return Napi::Number::New(info.Env(), icarus::GetNextWindowClicked());
+}
+
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
+	icarus::StartConsole();
 	exports.Set(Napi::String::New(env, "retrieveProcesses"), Napi::Function::New<RetrieveProcesses>(env));
+	exports.Set(Napi::String::New(env, "isElevated"), Napi::Function::New<IsElevated>(env));
+	exports.Set(Napi::String::New(env, "restartElevated"), Napi::Function::New<RestartElevated>(env));
+	exports.Set(Napi::String::New(env, "exitApplication"), Napi::Function::New<ExitApplication>(env));
+	exports.Set(Napi::String::New(env, "getNextClicked"), Napi::Function::New<GetNextClicked>(env));
 	return exports;
 }
 

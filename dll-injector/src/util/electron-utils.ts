@@ -38,4 +38,19 @@ export default class ElectronUtils {
             window.api.receiveProcesses(data => func(data));
         }
     }
+
+    static isElevated() {
+        if(ElectronUtils.runsInElectron()) {
+            return window.api.isElevated();
+        }
+        return Promise.resolve(true); /* TODO Refactor whole class and force electron use */
+    }
+
+    static restartElevated() {
+        if(ElectronUtils.runsInElectron()) {
+            return window.api.restartElevated();
+        }
+        return Promise.resolve(true); /* TODO Refactor whole class and force electron use */
+    }
+
 }

@@ -32,6 +32,18 @@ var ElectronUtils = /** @class */ (function () {
             window.api.receiveProcesses(function (data) { return func(data); });
         }
     };
+    ElectronUtils.isElevated = function () {
+        if (ElectronUtils.runsInElectron()) {
+            return window.api.isElevated();
+        }
+        return Promise.resolve(true); /* TODO Refactor whole class and force electron use */
+    };
+    ElectronUtils.restartElevated = function () {
+        if (ElectronUtils.runsInElectron()) {
+            return window.api.restartElevated();
+        }
+        return Promise.resolve(true); /* TODO Refactor whole class and force electron use */
+    };
     return ElectronUtils;
 }());
 exports.default = ElectronUtils;

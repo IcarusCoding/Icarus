@@ -1,7 +1,7 @@
 @use "../Constants.scss";
 @use "Container.scss";
 
-div {
+.content-container {
   .searchbar {
     height: 35px;
     border-radius: 10px;
@@ -39,10 +39,38 @@ div {
       border-bottom-right-radius: inherit;
       border-top-right-radius: inherit;
       width: 100%;
+      &::selection {
+        background-color: Constants.$color-accent-primary;
+      }
+      &::placeholder {
+        color: #a0a0a0;
+      }
       &:focus {
         outline: none;
         border-color: Constants.$color-accent-primary
       }
+    }
+  }
+  .error-container {
+    background-color: Constants.$color-bg-secondary;
+    display: flex;
+    flex-direction: column;
+    padding-top: 50px;
+    align-items: center;
+    height: 300px;
+    width: 100%;
+    border-bottom-left-radius: inherit;
+    border-bottom-right-radius: inherit;
+    color: white;
+    .icon-container {
+      font-size: 70px;
+      color: indianred;
+    }
+    .text-container {
+      text-align: center;
+      width: 50%;
+      overflow: hidden;
+      overflow-wrap: break-word;
     }
   }
 }

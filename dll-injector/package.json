@@ -30,8 +30,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-dev": "electron .",
-    "build_win64": "electron-packager . IcarusInjector --platform=win32 --arch=x64 --win32metadata.requested-execution-level=highestAvailable --overwrite",
-    "build_win86": "electron-packager . IcarusInjector --platform=win32 --arch=x86 --win32metadata.requested-execution-level=highestAvailable --overwrite",
+    "build_win64": "electron-packager . IcarusInjector --platform=win32 --arch=x64 --overwrite",
+    "build_win86": "electron-packager . IcarusInjector --platform=win32 --arch=x86 --overwrite",
     "installer_x64": "electron-installer-windows --src IcarusInjector-win32-x64/ --dest IcarusInjector-win32-x64-installer/"
   },
   "eslintConfig": {

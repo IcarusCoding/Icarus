@@ -10,6 +10,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   height: calc(100% - 45px); /* TODO ugly */
+  scroll-behavior: smooth;
   &::-webkit-scrollbar {
     width: 10px;
   }

@@ -1,4 +1,4 @@
-const {app, BrowserWindow, ipcMain} = require('electron')
+const {app, BrowserWindow, ipcMain, dialog} = require('electron')
 const isDev = require("electron-is-dev");
 const path = require("path");
 
@@ -19,7 +19,7 @@ function setupHandlers(window) {
             return;
         }
         const array = injector.retrieveProcesses();
-        e.sender.send('receive-processes', array);
+        e.sender.send('on-receive-processes', array);
     });
     ipcMain.handle('is-elevated', (e) => e.returnValue = elevated);
     ipcMain.handle('restart-elevated', (e) => {
@@ -29,6 +29,25 @@ function setupHandlers(window) {
         } else {
             e.returnValue = false;
         }
+    });
+    ipcMain.on('get-next-clicked', async (e) => {
+        if(!elevated) {
+            return;
+        }
+        injector.getNextClicked((result) => {
+            if(result === 4294967295) {
+                return;
+            }
+            e.sender.send('on-next-clicked', result);
+        });
+    });
+    ipcMain.handle('abort-selection', (e) => injector.abortSelection());
+    ipcMain.on('open-dll-dialog', async (e) => {
+        dialog.showOpenDialog(window, {properties: ['openFile'], filters: [{name: "DLL files", extensions: ["dll"]}]}).then(resp => {
+            if(!resp.canceled) {
+                e.sender.send("on-dll-selected", resp.filePaths[0]);
+            }
+        });
     });
 }
 

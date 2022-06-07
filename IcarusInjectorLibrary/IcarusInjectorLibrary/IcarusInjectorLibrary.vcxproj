@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Functions.h" />
     <ClInclude Include="Injector.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="ProcessInfo.h" />

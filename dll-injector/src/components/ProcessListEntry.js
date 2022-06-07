@@ -1,9 +1,9 @@
 import styles from "./ProcessListEntry.module.scss";
 
-const ProcessListEntry = ({name, exePath, pid, arch, icon}) => {
+const ProcessListEntry = ({name, exePath, pid, arch, icon, onClickFunc}) => {
 
     return (
-        <div className={styles.entry}>
+        <div className={styles.entry} onClick={() => onClickFunc()}>
             <div className={styles["entry-icon-container"]}>
                 <div className={styles["entry-arch-container"]}>
                     <h5 className={styles["entry-arch"]}>{arch}</h5>

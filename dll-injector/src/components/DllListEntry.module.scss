@@ -1,0 +1,19 @@
+@use "../Constants";
+
+.entry {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 50px;
+  background-color: Constants.$color-bg-secondary;
+  overflow: hidden;
+  padding-left: 10px;
+  padding-right: 10px;
+  &:not(:last-child) {
+    margin-bottom: 2px;
+  }
+  &:hover {
+    transition: 0.5s;
+    background-color: Constants.$selection-color;
+  }
+}

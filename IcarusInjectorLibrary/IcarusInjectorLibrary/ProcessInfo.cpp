@@ -57,7 +57,7 @@ vector<PProcessInfo> GetAllProcesses() noexcept {
         return processes;
     }
     do {
-        HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pe32.th32ProcessID); // TODO PROCESS_QUERY_LIMITED_INFORMATION
+        HANDLE hProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pe32.th32ProcessID);
         if (hProcess == NULL) {
           //  printError(TEXT("OpenProcess"));
         }
@@ -84,7 +84,18 @@ vector<PProcessInfo> GetAllProcesses() noexcept {
                     else {
                         icon = GetDefaultIcon();
                     }
-                    processes.push_back(new ProcessInfo(pe32.th32ProcessID, pe32.szExeFile, icon, Architecture::ARCH_X64, imageName));
+                    SYSTEM_INFO sysInfo{ 0 };
+                    GetNativeSystemInfo(&sysInfo);
+                    Architecture arch;
+                    if (!I_IsWow64Process) {
+                        arch = Architecture::ARCH_X86;
+                    }
+                    else {
+                        BOOL wow64;
+                        I_IsWow64Process(hProcess, &wow64);
+                        arch = wow64 ? Architecture::ARCH_X86 : Architecture::ARCH_X64;
+                    }
+                    processes.push_back(new ProcessInfo(pe32.th32ProcessID, pe32.szExeFile, icon, arch, imageName));
                 }
             }
             CloseHandle(hProcess);
@@ -92,8 +103,4 @@ vector<PProcessInfo> GetAllProcesses() noexcept {
     } while (Process32Next(hProcessSnapshot, &pe32));
     CloseHandle(hProcessSnapshot);
     return processes;
-}
-
-Architecture GetArchitecture(HANDLE hProcess) noexcept {
-	return Architecture();
 }

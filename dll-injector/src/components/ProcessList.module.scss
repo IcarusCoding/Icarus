@@ -19,6 +19,10 @@
       justify-content: center;
       width: 40px;
       min-width: 40px;
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
       .icon {
         color: white;
         transition: 0.5s;
@@ -55,16 +59,21 @@
     background-color: Constants.$color-bg-secondary;
     display: flex;
     flex-direction: column;
-    padding-top: 50px;
     align-items: center;
+    justify-content: center;
     height: 300px;
     width: 100%;
     border-bottom-left-radius: inherit;
     border-bottom-right-radius: inherit;
     color: white;
     .icon-container {
+      display: inherit;
+      justify-content: inherit;
+      align-items: inherit;
       font-size: 70px;
       color: indianred;
+      margin-top: -15px; /* TODO ugly */
+      margin-bottom: 20px;
     }
     .text-container {
       text-align: center;

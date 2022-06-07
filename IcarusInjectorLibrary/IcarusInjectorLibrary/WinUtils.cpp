@@ -7,9 +7,6 @@
 const static TCHAR encodeLookup[] = TEXT("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
 const static TCHAR padCharacter = TEXT('=');
 
-static HHOOK hWinHook;
-static DWORD clickedPID;
-
 unsigned int decodeBMP(std::vector<unsigned char>& image, unsigned int width, unsigned int height, const std::vector<unsigned char>& bmp) {
     unsigned pixeloffset = bmp[10] + 256 * bmp[11];
     unsigned numChannels = bmp[28] / 8;
@@ -49,7 +46,7 @@ BOOL icarus::IsElevated() {
 std::string icarus::ConvertIconToBase64(HICON hIcon) {
     ICONINFO iconInfo;
     if (!GetIconInfo(hIcon, &iconInfo)) {
-        std::cout << "ALLAHU AKBAR ---> " << GetLastError() << "    " << (hIcon == nullptr) << "\n";
+        // ERROR
         return "";
     }
     const int width = iconInfo.xHotspot * 2;
@@ -193,7 +190,6 @@ DWORD icarus::ElevatedRestart() {
     }
     while (*cmd == ' ' || *cmd == '\t')
         cmd++;
-
     SHELLEXECUTEINFOA shellExecuteInfo = {
         .cbSize = sizeof(SHELLEXECUTEINFOA),
         .fMask = NULL,
@@ -215,21 +211,59 @@ VOID icarus::ExitApplication(DWORD exitCode) {
     ExitProcess(exitCode);
 }
 
-LRESULT CALLBACK HookProc(INT code, WPARAM wParam, LPARAM lParam) {
+icarus::WindowSelector* icarus::WindowSelector::pWindowSelector;
+HHOOK icarus::WindowSelector::hWinHook;
+
+icarus::WindowSelector::WindowSelector() : unhooked(false), PID(-1) {}
+
+icarus::WindowSelector::~WindowSelector() {
+    if (hWinHook) {
+        UnhookWindowsHookEx(pWindowSelector->hWinHook);
+    }
+}
+
+LRESULT icarus::WindowSelector::HookProc(INT code, WPARAM wParam, LPARAM lParam) {
     if (wParam == WM_LBUTTONDOWN) {
         POINT p;
         GetCursorPos(&p);
         HWND hwnd = WindowFromPoint(p);
+        RECT rect;
+        GetWindowRect(hwnd, &rect);
         DWORD PID;
         GetWindowThreadProcessId(hwnd, &PID);
-        clickedPID = PID;
-        std::cout << "CLICKED ON " << clickedPID << "\n"; /* TODO callbacks */
-        UnhookWindowsHookEx(hWinHook);
+        if (PID != GetCurrentProcessId()) {
+            pWindowSelector->PID = PID;
+            UnhookWindowsHookEx(pWindowSelector->hWinHook);
+            pWindowSelector->unhooked = true;
+        }
     }
-    return CallNextHookEx(hWinHook, code, wParam, lParam);
+    return CallNextHookEx(pWindowSelector->hWinHook, code, wParam, lParam);
 }
 
-DWORD icarus::GetNextWindowClicked() {
-    hWinHook = SetWindowsHookExA(WH_MOUSE_LL, HookProc, NULL, 0);
-    return -1;
+DWORD icarus::WindowSelector::SelectNextWindow() {
+    if (pWindowSelector) {
+        // ERROR -> already running
+        return -1;
+    }
+    PID = -1;
+    pWindowSelector = this;
+    hWinHook = SetWindowsHookEx(WH_MOUSE_LL, HookProc, NULL, 0);
+    MSG msg;
+    while (!unhooked) {
+        while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+    }
+    unhooked = FALSE;
+    pWindowSelector = nullptr;
+    return PID;
+}
+
+void icarus::WindowSelector::AbortActiveSelection() {
+    if (pWindowSelector) {
+        UnhookWindowsHookEx(pWindowSelector->hWinHook);
+        pWindowSelector->unhooked = true;
+        pWindowSelector = nullptr;
+    }
 }

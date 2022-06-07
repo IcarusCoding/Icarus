@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Functions.h"
 #include "WinUtils.h"
 
 #include <Windows.h>
@@ -38,4 +39,3 @@ public:
 
 std::string GetDefaultIcon() noexcept;
 std::vector<PProcessInfo> GetAllProcesses() noexcept;
-Architecture GetArchitecture(HANDLE hProcess) noexcept;

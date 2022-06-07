@@ -33,9 +33,9 @@ export default class ElectronUtils {
         }
     }
 
-    static receiveProcesses(func) {
+    static onReceiveProcesses(func) {
         if (ElectronUtils.runsInElectron()) {
-            window.api.receiveProcesses(data => func(data));
+            window.api.onReceiveProcesses(data => func(data));
         }
     }
 
@@ -51,6 +51,36 @@ export default class ElectronUtils {
             return window.api.restartElevated();
         }
         return Promise.resolve(true); /* TODO Refactor whole class and force electron use */
+    }
+
+    static getNextClicked() {
+        if (ElectronUtils.runsInElectron()) {
+            return window.api.getNextClicked();
+        }
+    }
+
+    static onNextClicked(func) {
+        if (ElectronUtils.runsInElectron()) {
+            window.api.onNextClicked(data => func(data));
+        }
+    }
+
+    static abortSelection() {
+        if(ElectronUtils.runsInElectron()) {
+            window.api.abortSelection();
+        }
+    }
+
+    static openDLLDialog() {
+        if (ElectronUtils.runsInElectron()) {
+            window.api.openDLLDialog();
+        }
+    }
+
+    static onDLLSelected(func) {
+        if (ElectronUtils.runsInElectron()) {
+            window.api.onDLLSelected(data => func(data));
+        }
     }
 
 }

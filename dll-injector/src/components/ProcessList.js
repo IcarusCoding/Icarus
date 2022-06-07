@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {FaSearch} from "react-icons/fa";
+import {BiTargetLock} from "react-icons/bi";
 import {HiOutlineRefresh} from "react-icons/hi";
 import {MdErrorOutline} from "react-icons/md";
 
@@ -8,7 +8,7 @@ import ElectronUtils from "../util/electron-utils";
 
 import styles from "./ProcessList.module.scss";
 
-const ProcessList = () => {
+const ProcessList = ({selectFunc, switchTo}) => {
 
     const [SearchInput, SetSearchInput] = useState("");
     const [Processes, SetProcesses] = useState([]);
@@ -18,15 +18,15 @@ const ProcessList = () => {
     const processRequest = () => ElectronUtils.getProcesses();
 
     useEffect(() => {
+        ElectronUtils.onReceiveProcesses(processes => SetProcesses(processes.map(process => JSON.parse(process))));
         processRequest();
-        ElectronUtils.receiveProcesses(processes => SetProcesses(processes.map(process => JSON.parse(process))));
     }, []);
 
     return (
       <div className={styles['content-container']}>
           <div className={styles.searchbar}>
-              <button type="submit">
-                  <FaSearch className={styles.icon} style={{fontSize: "16px"}}/>
+              <button type="submit" onClick={() => selectFunc()}>
+                  <BiTargetLock className={styles.icon} style={{fontSize: "20px"}}/>
               </button>
               <div className={styles['v-spacer']}/>
               <input type="text" placeholder="Search for a process..." onChange={inputChanged} maxLength={40}/>
@@ -46,9 +46,18 @@ const ProcessList = () => {
                           {Processes.length === 0 ? "There is no process available." : `There is no process which starts with "${SearchInput}".`}
                       </div>
                   </div> :
-                      Processes.filter(item => item.name.toUpperCase().startsWith(SearchInput.toUpperCase())).map((item, index) => {
+                      Processes.filter(item => item.name.toUpperCase().startsWith(SearchInput.toUpperCase())).sort((a, b) => {
+                          const aName = a["name"].toUpperCase();
+                          const bName = b["name"].toUpperCase();
+                          if(aName > bName) {
+                              return 1;
+                          } else if(aName < bName) {
+                              return -1;
+                          }
+                          return 0;
+                      }).map((item, index) => {
                           return (
-                              <ProcessListEntry key={index} name={item.name} exePath={item.exePath} pid={item.pid} arch="x64" icon={item.icon}/>
+                              <ProcessListEntry key={index} name={item.name} exePath={item.exePath} pid={item.pid} arch={item.arch} icon={item.icon} onClickFunc={() => switchTo("dll")}/>
                           );
                       })
               }

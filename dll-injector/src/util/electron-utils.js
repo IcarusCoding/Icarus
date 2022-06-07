@@ -27,9 +27,9 @@ var ElectronUtils = /** @class */ (function () {
             return window.api.getProcesses();
         }
     };
-    ElectronUtils.receiveProcesses = function (func) {
+    ElectronUtils.onReceiveProcesses = function (func) {
         if (ElectronUtils.runsInElectron()) {
-            window.api.receiveProcesses(function (data) { return func(data); });
+            window.api.onReceiveProcesses(function (data) { return func(data); });
         }
     };
     ElectronUtils.isElevated = function () {
@@ -43,6 +43,31 @@ var ElectronUtils = /** @class */ (function () {
             return window.api.restartElevated();
         }
         return Promise.resolve(true); /* TODO Refactor whole class and force electron use */
+    };
+    ElectronUtils.getNextClicked = function () {
+        if (ElectronUtils.runsInElectron()) {
+            return window.api.getNextClicked();
+        }
+    };
+    ElectronUtils.onNextClicked = function (func) {
+        if (ElectronUtils.runsInElectron()) {
+            window.api.onNextClicked(function (data) { return func(data); });
+        }
+    };
+    ElectronUtils.abortSelection = function () {
+        if (ElectronUtils.runsInElectron()) {
+            window.api.abortSelection();
+        }
+    };
+    ElectronUtils.openDLLDialog = function () {
+        if (ElectronUtils.runsInElectron()) {
+            window.api.openDLLDialog();
+        }
+    };
+    ElectronUtils.onDLLSelected = function (func) {
+        if (ElectronUtils.runsInElectron()) {
+            window.api.onDLLSelected(function (data) { return func(data); });
+        }
     };
     return ElectronUtils;
 }());

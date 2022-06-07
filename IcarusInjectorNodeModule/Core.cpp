@@ -1,26 +1,21 @@
-#include "WinUtils.h"
-#include "ProcessInfo.h"
+#include "Core.h"
 
-#include "json.hpp"
+#include <thread>
+#include <chrono>
 
-#include <napi.h>
-#include <vector>
 #include <iostream>
-#include <tlhelp32.h>
-#include <tchar.h>
 
-void printError(const char* msg) {
-    DWORD eNum;
-    TCHAR sysMsg[256];
-    TCHAR* p;
+AsyncWorker::AsyncWorker(const Napi::Function& callback) : Napi::AsyncWorker(callback) {}
 
-    eNum = GetLastError();
-    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-        NULL, eNum,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_ENGLISH_US),
-        sysMsg, 256, NULL);
+void AsyncWorker::Execute() {
+	icarus::WindowSelector selector;
+	result = selector.SelectNextWindow();
+}
 
-    std::cout << "WARNING: " << msg << " failed with error " << eNum << " (" << sysMsg << ")\n";
+/* TODO error handling */
+void AsyncWorker::OnOK() {
+	Napi::Env env = Env();
+	Callback().MakeCallback(Receiver().Value(), { Napi::Number::New(env, result) });
 }
 
 Napi::Value RetrieveProcesses(const Napi::CallbackInfo &info) {
@@ -33,6 +28,7 @@ Napi::Value RetrieveProcesses(const Napi::CallbackInfo &info) {
 		j["pid"] = processInfo->GetPID();
 		j["name"] = processInfo->GetName();
 		j["icon"] = processInfo->GetIcon();
+		j["arch"] = processInfo->GetArchitecture() == Architecture::ARCH_X64 ? "x64" : "x86";
 		j["exePath"] = processInfo->GetExePath();
 		processesNapi[i++] = Napi::String::New(env, j.dump());
         delete processInfo;
@@ -52,8 +48,13 @@ VOID ExitApplication(const Napi::CallbackInfo& info) {
 	icarus::ExitApplication(info.Length() != 0 ? info[0].ToNumber().Int32Value() : 0);
 }
 
-Napi::Value GetNextClicked(const Napi::CallbackInfo& info) {
-	return Napi::Number::New(info.Env(), icarus::GetNextWindowClicked());
+VOID GetNextClicked(const Napi::CallbackInfo& info) {
+	icarus::WindowSelector::AbortActiveSelection();
+	(new AsyncWorker(info[0].As<Napi::Function>()))->Queue();
+}
+
+VOID AbortSelection(const Napi::CallbackInfo& info) {
+	icarus::WindowSelector::AbortActiveSelection();
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
@@ -63,6 +64,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
 	exports.Set(Napi::String::New(env, "restartElevated"), Napi::Function::New<RestartElevated>(env));
 	exports.Set(Napi::String::New(env, "exitApplication"), Napi::Function::New<ExitApplication>(env));
 	exports.Set(Napi::String::New(env, "getNextClicked"), Napi::Function::New<GetNextClicked>(env));
+	exports.Set(Napi::String::New(env, "abortSelection"), Napi::Function::New<AbortSelection>(env));
 	return exports;
 }
 

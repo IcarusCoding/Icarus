@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Errors.h"
+
 #include <Windows.h>
 #include <vector>
 #include <string>
@@ -9,54 +11,60 @@
 #define REFLECTIVE 0x80
 #define NATIVE 0x100
 
-class ReflectiveInjector;
+namespace icarus {
 
-typedef std::vector<std::string> stringvector;
+	class ReflectiveInjector;
 
-typedef struct InjectionContext {
-	DWORD PID;
-	stringvector dllVector;
-	DWORD settings;
-} InjectionContext, * PInjectionContext;
+	constexpr DWORD ACCESS_RIGHTS = PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION | PROCESS_QUERY_INFORMATION;
 
-typedef struct DllStructure {
-	PBYTE pDllData;
-	PIMAGE_DOS_HEADER pDosHeader;
-	PIMAGE_NT_HEADERS pNtHeaders;
-	PIMAGE_FILE_HEADER pCoffHeader;
-	PIMAGE_OPTIONAL_HEADER pOptHeader;
-	std::string pDllPath;
-} DllStructure, * PDllStructure;
+	typedef std::vector<std::string> stringvector;
 
-class Injector {
+	typedef struct InjectionContext {
+		DWORD PID;
+		stringvector dllVector;
+		DWORD settings;
+	} InjectionContext, * PInjectionContext;
 
-protected:
-	HANDLE hTargetProcess;
-	PInjectionContext ctx;
-	explicit Injector(PInjectionContext ctx) noexcept;
+	typedef struct DllStructure {
+		PBYTE pDllData;
+		PIMAGE_DOS_HEADER pDosHeader;
+		PIMAGE_NT_HEADERS pNtHeaders;
+		PIMAGE_FILE_HEADER pCoffHeader;
+		PIMAGE_OPTIONAL_HEADER pOptHeader;
+		std::string pDllPath;
+	} DllStructure, * PDllStructure;
 
-public:
-	virtual DWORD Inject() noexcept = 0;
-	DWORD GetHandle();
-	DWORD UnlinkFromPEB(HINSTANCE hModule) noexcept;
+	class Injector {
 
-private:
-	DWORD HijackHandle(DWORD access) noexcept;
+	protected:
+		HANDLE hTargetProcess;
+		PInjectionContext ctx;
+		explicit Injector(PInjectionContext ctx) noexcept;
 
-};
+	public:
+		virtual DWORD Inject() noexcept = 0;
+		DWORD RetrieveHandle();
+		DWORD UnlinkFromPEB(HINSTANCE hModule) noexcept;
 
-class ReflectiveInjector : public Injector {
+	private:
+		DWORD HijackHandle(DWORD access) noexcept;
 
-private:
-	ReflectiveInjector(PInjectionContext ctx);
+	};
 
-public:
-	friend Injector* CreateInjector(PInjectionContext ctx);
-	DWORD Inject() noexcept;
+	class ReflectiveInjector : public Injector {
 
-private:
-	DWORD _Inject(PDllStructure pDllStructure) noexcept;
+	private:
+		ReflectiveInjector(PInjectionContext ctx);
 
-};
+	public:
+		friend Injector* CreateInjector(PInjectionContext ctx);
+		DWORD Inject() noexcept override;
 
-Injector* CreateInjector(PInjectionContext ctx);
+	private:
+		DWORD _Inject(PDllStructure pDllStructure) noexcept;
+
+	};
+
+	Injector* CreateInjector(PInjectionContext ctx);
+
+}

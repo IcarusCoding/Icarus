@@ -1,0 +1,6 @@
+#pragma once
+
+#define ICARUS_SUCCESS 0x00;
+#define ICARUS_PROCESS_OPEN_FAILED 0x01;
+#define ICARUS_FILE_NOT_FOUND 0x02;
+#define ICARUS_FILE_READ_FAILED 0x03;

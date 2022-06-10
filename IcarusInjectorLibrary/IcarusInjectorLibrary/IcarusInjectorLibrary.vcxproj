@@ -143,6 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DllUtils.h" />
+    <ClInclude Include="Errors.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="Injector.h" />
     <ClInclude Include="lodepng.h" />
@@ -150,9 +152,11 @@
     <ClInclude Include="WinUtils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DllUtils.cpp" />
     <ClCompile Include="Injector.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="ProcessInfo.cpp" />
+    <ClCompile Include="Test.cpp" />
     <ClCompile Include="WinUtils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

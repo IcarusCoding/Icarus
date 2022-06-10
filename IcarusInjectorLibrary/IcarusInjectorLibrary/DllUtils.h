@@ -17,5 +17,7 @@ namespace icarus {
 	} DllRepresentation, *PDllRepresentation;
 
 	DWORD LoadDll(PCCH szDllPath, PDllRepresentation pDllRepresentation);
+	DWORD ValidateDll(PBYTE pRawData);
+	DWORD ValidateDll(PDllRepresentation pDllRepresentation);
 
 }

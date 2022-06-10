@@ -21,3 +21,32 @@ DWORD icarus::LoadDll(PCCH szDllPath, PDllRepresentation pDllRepresentation) {
 	pDllRepresentation->szDllPath = szDllPath;
 	return ICARUS_SUCCESS;
 }
+
+DWORD icarus::ValidateDll(PBYTE pRawData) {
+	if (!pRawData) {
+		return ICARUS_ARGUMENT_INVALID;
+	}
+	PIMAGE_DOS_HEADER pDosHeader = reinterpret_cast<PIMAGE_DOS_HEADER>(pRawData);
+	return ValidateDll(pDosHeader, &reinterpret_cast<PIMAGE_NT_HEADERS>(pRawData + pDosHeader->e_lfanew)->FileHeader);
+}
+
+DWORD icarus::ValidateDll(PDllRepresentation pDllRepresentation) {
+	return ValidateDll(pDllRepresentation->pDosHeader, pDllRepresentation->pCoffHeader);
+}
+
+DWORD ValidateDll(PIMAGE_DOS_HEADER pDosHeader, PIMAGE_FILE_HEADER pCoffHeader) {
+	if (!pDosHeader || !pCoffHeader) {
+		return ICARUS_ARGUMENT_INVALID;
+	}
+	if (pDosHeader->e_magic != 0x5A4D) {
+		return ICARUS_FILE_INVALID_DLL;
+	}
+#ifdef _WIN64
+	if (pCoffHeader->Machine != IMAGE_FILE_MACHINE_AMD64) {
+#else
+	if (pCoffHeader->Machine != IMAGE_FILE_MACHINE_I386) {
+#endif
+		return ICARUS_ARCH_INVALID_PLATFORM;
+	}
+	return ICARUS_SUCCESS;
+}

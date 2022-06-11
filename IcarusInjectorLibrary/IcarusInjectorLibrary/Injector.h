@@ -2,6 +2,7 @@
 
 #include "Errors.h"
 #include "DllUtils.h"
+#include "Functions.h"
 
 #include <Windows.h>
 #include <vector>
@@ -28,16 +29,16 @@ namespace icarus {
 
 	class Injector {
 
+	public:
+		virtual ICARUS_ERROR_CODE Inject() noexcept;
+		ICARUS_ERROR_CODE RetrieveHandle();
+		ICARUS_ERROR_CODE UnlinkFromPEB(HINSTANCE hModule) noexcept;
+
 	protected:
 		HANDLE hTargetProcess;
 		PInjectionContext ctx;
 		explicit Injector(PInjectionContext ctx) noexcept;
 		virtual ICARUS_ERROR_CODE _Inject(PDllRepresentation pDllRepresentation) noexcept = 0;
-
-	public:
-		virtual ICARUS_ERROR_CODE Inject() noexcept;
-		ICARUS_ERROR_CODE RetrieveHandle();
-		ICARUS_ERROR_CODE UnlinkFromPEB(HINSTANCE hModule) noexcept;
 
 	private:
 		ICARUS_ERROR_CODE HijackHandle(DWORD access) noexcept;
@@ -46,14 +47,23 @@ namespace icarus {
 
 	class ReflectiveInjector : public Injector {
 
-	private:
-		ReflectiveInjector(PInjectionContext ctx);
+		typedef struct ReflectiveContext {
+			func_LoadLibraryA funcLoadLibraryA;
+			func_GetProcAddress funcGetProcAddress;
+			HINSTANCE hModule;
+			PBYTE pImageBase;
+			DWORD settings;
+		} ReflectiveContext, *PReflectiveContext;
 
 	public:
 		friend Injector* CreateInjector(PInjectionContext ctx);
 
 	private:
+		ReflectiveInjector(PInjectionContext ctx);
 		ICARUS_ERROR_CODE _Inject(PDllRepresentation pDllRepresentation) noexcept override;
+		ICARUS_ERROR_CODE Allocate(PDllRepresentation pDllRepresentation, PBYTE* ppLocalImageBase, PBYTE* ppExtImageBase) noexcept;
+		ICARUS_ERROR_CODE CopyHeadersAndSections(PDllRepresentation pDllRepresentation, PBYTE pLocalImageBase) noexcept;
+		ICARUS_ERROR_CODE Relocate(PDllRepresentation pDllRepresentation, PBYTE pLocalImageBase) noexcept;
 
 	};
 

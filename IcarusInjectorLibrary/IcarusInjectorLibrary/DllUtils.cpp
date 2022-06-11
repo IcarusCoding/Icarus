@@ -1,6 +1,8 @@
 #include "DllUtils.h"
 
-DWORD icarus::LoadDll(PCCH szDllPath, PDllRepresentation pDllRepresentation) {
+ICARUS_ERROR_CODE ValidateDll(PIMAGE_DOS_HEADER pDosHeader, PIMAGE_FILE_HEADER pCoffHeader);
+
+ICARUS_ERROR_CODE icarus::LoadDll(PCCH szDllPath, PDllRepresentation pDllRepresentation) {
 	const DWORD dwAttributes = GetFileAttributes(szDllPath);
 	if ((dwAttributes == INVALID_FILE_ATTRIBUTES && GetLastError() == ERROR_FILE_NOT_FOUND) || ((dwAttributes & FILE_ATTRIBUTE_DEVICE) || (dwAttributes & FILE_ATTRIBUTE_DIRECTORY))) {
 		return ICARUS_FILE_NOT_FOUND;
@@ -22,7 +24,7 @@ DWORD icarus::LoadDll(PCCH szDllPath, PDllRepresentation pDllRepresentation) {
 	return ICARUS_SUCCESS;
 }
 
-DWORD icarus::ValidateDll(PBYTE pRawData) {
+ICARUS_ERROR_CODE icarus::ValidateDll(PBYTE pRawData) {
 	if (!pRawData) {
 		return ICARUS_ARGUMENT_INVALID;
 	}
@@ -30,11 +32,11 @@ DWORD icarus::ValidateDll(PBYTE pRawData) {
 	return ValidateDll(pDosHeader, &reinterpret_cast<PIMAGE_NT_HEADERS>(pRawData + pDosHeader->e_lfanew)->FileHeader);
 }
 
-DWORD icarus::ValidateDll(PDllRepresentation pDllRepresentation) {
+ICARUS_ERROR_CODE icarus::ValidateDll(PDllRepresentation pDllRepresentation) {
 	return ValidateDll(pDllRepresentation->pDosHeader, pDllRepresentation->pCoffHeader);
 }
 
-DWORD ValidateDll(PIMAGE_DOS_HEADER pDosHeader, PIMAGE_FILE_HEADER pCoffHeader) {
+ICARUS_ERROR_CODE ValidateDll(PIMAGE_DOS_HEADER pDosHeader, PIMAGE_FILE_HEADER pCoffHeader) {
 	if (!pDosHeader || !pCoffHeader) {
 		return ICARUS_ARGUMENT_INVALID;
 	}

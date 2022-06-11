@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef ICARUS_ERROR_DEF
+typedef unsigned long ICARUS_ERROR_CODE;
+#endif
+
 #define ICARUS_SUCCESS 0x00;
 #define ICARUS_PROCESS_OPEN_FAILED 0x01;
 #define ICARUS_FILE_NOT_FOUND 0x02;

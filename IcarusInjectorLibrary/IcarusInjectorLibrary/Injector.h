@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Errors.h"
+#include "DllUtils.h"
 
 #include <Windows.h>
 #include <vector>
@@ -25,29 +26,21 @@ namespace icarus {
 		DWORD settings;
 	} InjectionContext, * PInjectionContext;
 
-	typedef struct DllStructure {
-		PBYTE pDllData;
-		PIMAGE_DOS_HEADER pDosHeader;
-		PIMAGE_NT_HEADERS pNtHeaders;
-		PIMAGE_FILE_HEADER pCoffHeader;
-		PIMAGE_OPTIONAL_HEADER pOptHeader;
-		std::string pDllPath;
-	} DllStructure, * PDllStructure;
-
 	class Injector {
 
 	protected:
 		HANDLE hTargetProcess;
 		PInjectionContext ctx;
 		explicit Injector(PInjectionContext ctx) noexcept;
+		virtual ICARUS_ERROR_CODE _Inject(PDllRepresentation pDllRepresentation) noexcept = 0;
 
 	public:
-		virtual DWORD Inject() noexcept = 0;
-		DWORD RetrieveHandle();
-		DWORD UnlinkFromPEB(HINSTANCE hModule) noexcept;
+		virtual ICARUS_ERROR_CODE Inject() noexcept;
+		ICARUS_ERROR_CODE RetrieveHandle();
+		ICARUS_ERROR_CODE UnlinkFromPEB(HINSTANCE hModule) noexcept;
 
 	private:
-		DWORD HijackHandle(DWORD access) noexcept;
+		ICARUS_ERROR_CODE HijackHandle(DWORD access) noexcept;
 
 	};
 
@@ -58,10 +51,9 @@ namespace icarus {
 
 	public:
 		friend Injector* CreateInjector(PInjectionContext ctx);
-		DWORD Inject() noexcept override;
 
 	private:
-		DWORD _Inject(PDllStructure pDllStructure) noexcept;
+		ICARUS_ERROR_CODE _Inject(PDllRepresentation pDllRepresentation) noexcept override;
 
 	};
 

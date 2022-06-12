@@ -54,7 +54,7 @@ ICARUS_ERROR_CODE icarus::ReflectiveInjector::_Inject(PDllRepresentation pDllRep
 	if (code) {
 		return code;
 	}
-	if (code != CopyHeadersAndSections(pDllRepresentation, pLocalImageBase)) {
+	if (code = CopyHeadersAndSections(pDllRepresentation, pLocalImageBase)) {
 		VirtualFree(pLocalImageBase, 0, MEM_RELEASE);
 		VirtualFreeEx(hTargetProcess, pExtImageBase, 0, MEM_RELEASE);
 		return code;
@@ -118,7 +118,7 @@ ICARUS_ERROR_CODE icarus::ReflectiveInjector::Relocate(PDllRepresentation pDllRe
 #ifdef _WIN64
 				if (*pRelocEntry >> 0xC == IMAGE_REL_BASED_DIR64) {
 #else
-				if (*pOffsetEntry >> 0xC == IMAGE_REL_BASED_HIGHLOW) {
+				if (*pRelocEntry >> 0xC == IMAGE_REL_BASED_HIGHLOW) {
 #endif
 					// apply fixup at base + blockVA + reloc offset
 					*reinterpret_cast<PULONG_PTR>(pLocalImageBase + pBaseRelocBlock->VirtualAddress + (*pRelocEntry & 0xFFF)) += reinterpret_cast<ULONG_PTR>(pLocalImageBase - pDllRepresentation->pOptHeader->ImageBase);

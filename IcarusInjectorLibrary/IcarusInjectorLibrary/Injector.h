@@ -63,7 +63,7 @@ namespace icarus {
 		ICARUS_ERROR_CODE _Inject(PDllRepresentation pDllRepresentation) noexcept override;
 		ICARUS_ERROR_CODE Allocate(PDllRepresentation pDllRepresentation, PBYTE* ppLocalImageBase, PBYTE* ppExtImageBase) noexcept;
 		ICARUS_ERROR_CODE CopyHeadersAndSections(PDllRepresentation pDllRepresentation, PBYTE pLocalImageBase) noexcept;
-		ICARUS_ERROR_CODE Relocate(PDllRepresentation pDllRepresentation, PBYTE pLocalImageBase) noexcept;
+		ICARUS_ERROR_CODE Relocate(PDllRepresentation pDllRepresentation, PBYTE pLocalImageBase, PBYTE pExtImageBase) noexcept;
 		ICARUS_ERROR_CODE CopyToProcess(PDllRepresentation pDllRepresentation, PBYTE pLocalImageBase, PBYTE pExtImageBase) noexcept;
 		ICARUS_ERROR_CODE ExecuteRemoteShellCode(PDllRepresentation pDllRepresentation, PBYTE pExtImageBase) noexcept;
 

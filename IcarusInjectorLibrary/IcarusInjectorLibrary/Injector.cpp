@@ -44,7 +44,6 @@ ICARUS_ERROR_CODE icarus::Injector::RetrieveHandle() {
 	return ICARUS_SUCCESS;
 }
 
-//TODO apparently imports or tls callbacks do not work
 BYTE ShellCode86[] = {
 		 0x55, 0x8b, 0xec, 0x83, 0xec, 0x1c, 0x83, 0x7d, 0x08, 0x00, 0x75, 0x05, 0xe9, 0x50, 0x01,
 		 0x00, 0x00, 0x8b, 0x45, 0x08, 0x8b, 0x48, 0x0c, 0x89, 0x4d, 0xfc, 0x8b, 0x55, 0xfc, 0x8b,
@@ -72,7 +71,6 @@ BYTE ShellCode86[] = {
 		 0x45, 0x08, 0x8b, 0x4d, 0xfc, 0x89, 0x48, 0x08, 0x8b, 0xe5, 0x5d, 0xc2, 0x04, 0x00,
 };
 
-//TODO apparently imports or tls callbacks do not work
 BYTE ShellCode64[] = {
 		 0x48, 0x89, 0x4c, 0x24, 0x08, 0x48, 0x83, 0xec, 0x68, 0x48, 0x83, 0x7c, 0x24, 0x70, 0x00,
 		 0x75, 0x05, 0xe9, 0xeb, 0x01, 0x00, 0x00, 0x48, 0x8b, 0x44, 0x24, 0x70, 0x48, 0x8b, 0x40,
@@ -133,8 +131,8 @@ ICARUS_ERROR_CODE icarus::ReflectiveInjector::_Inject(PDllRepresentation pDllRep
 		VirtualFreeEx(hTargetProcess, pExtImageBase, 0, MEM_RELEASE);
 		return code;
 	}
-	if (pLocalImageBase - pDllRepresentation->pOptHeader->ImageBase) {
-		if (code = Relocate(pDllRepresentation, pLocalImageBase)) {
+	if (pExtImageBase - pDllRepresentation->pOptHeader->ImageBase) {
+		if (code = Relocate(pDllRepresentation, pLocalImageBase, pExtImageBase)) {
 			VirtualFree(pLocalImageBase, 0, MEM_RELEASE);
 			VirtualFreeEx(hTargetProcess, pExtImageBase, 0, MEM_RELEASE);
 			return code;
@@ -188,7 +186,7 @@ ICARUS_ERROR_CODE icarus::ReflectiveInjector::CopyHeadersAndSections(PDllReprese
 	return ICARUS_SUCCESS;
 }
 
-ICARUS_ERROR_CODE icarus::ReflectiveInjector::Relocate(PDllRepresentation pDllRepresentation, PBYTE pLocalImageBase) noexcept {
+ICARUS_ERROR_CODE icarus::ReflectiveInjector::Relocate(PDllRepresentation pDllRepresentation, PBYTE pLocalImageBase, PBYTE pExtImageBase) noexcept {
 	if (!pDllRepresentation || !pLocalImageBase) {
 		return ICARUS_ARGUMENT_INVALID;
 	}
@@ -203,7 +201,7 @@ ICARUS_ERROR_CODE icarus::ReflectiveInjector::Relocate(PDllRepresentation pDllRe
 				if (*pRelocEntry >> 0xC == IMAGE_REL_BASED_HIGHLOW) {
 #endif
 					// apply fixup at base + blockVA + reloc offset
-					*reinterpret_cast<PULONG_PTR>(pLocalImageBase + pBaseRelocBlock->VirtualAddress + (*pRelocEntry & 0xFFF)) += reinterpret_cast<ULONG_PTR>(pLocalImageBase - pDllRepresentation->pOptHeader->ImageBase);
+					*reinterpret_cast<PULONG_PTR>(pLocalImageBase + pBaseRelocBlock->VirtualAddress + (*pRelocEntry & 0xFFF)) += reinterpret_cast<ULONG_PTR>(pExtImageBase - pDllRepresentation->pOptHeader->ImageBase);
 				}
 				pRelocEntry++;
 			}

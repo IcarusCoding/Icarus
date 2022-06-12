@@ -43,7 +43,7 @@ else:
                     h = ['{0:#0{1}x}'.format(int(i, 16), 4) for i in h]
                     print('BYTE ShellCode[] = {')
                     for i in range(0, len(h), 15):
-                        print('\t', ', '.join(h[i:i + 15]))
+                        print('\t', ', '.join(h[i:i + 15]) + ',')
                     print('};')
 
 if not args.keep_auxiliary:
